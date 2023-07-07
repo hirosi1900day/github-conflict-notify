@@ -41,4 +41,5 @@ jobs:
         uses: rtCamp/action-slack-notify@v2.0.0
         env:
           SLACK_CHANNEL: "test2"
-          SLACK_MESSAGE: "test"
+          SLACK_MESSAGE: "Pushed to branch by ${{ github.actor }}. ${{ env.CONFLICT_MESSAGE }}"
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

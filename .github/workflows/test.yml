@@ -14,6 +14,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          ref: develop
   
       - name: Detect Merge Conflict
         id: conflict_check
@@ -21,10 +22,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git fetch
-          git checkout develop
           REF=${{ github.ref_name }}
           ORIGIN_REF="origin/$REF"
-          git merge --no-commit --no-ff develop $ORIGIN_REF
+          git merge --no-commit --no-ff $ORIGIN_REF
         continue-on-error: true
   
       - name: Set Conflict Message

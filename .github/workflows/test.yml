@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: develop
-
+  
       - name: Detect Merge Conflict
         id: conflict_check
         run: |
@@ -28,12 +28,12 @@ jobs:
         continue-on-error: true
   
       - name: Set Conflict Message
-        if: failure()
+        if: steps.conflict_check.outcome == 'failure'
         run: |
           echo "CONFLICT_MESSAGE=Merge conflict detected." >> $GITHUB_ENV
 
       - name: Set NoConflict Message
-        if: success()
+        if: steps.conflict_check.outcome == 'success'
         run: |
           echo "CONFLICT_MESSAGE=No merge conflict." >> $GITHUB_ENV
 

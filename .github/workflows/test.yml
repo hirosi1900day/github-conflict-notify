@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: develop
-
+  
       - name: Detect Merge Conflict
         id: conflict_check
         run: |
@@ -40,5 +40,6 @@ jobs:
       - name: Send Slack notification
         uses: rtCamp/action-slack-notify@v2.0.0
         env:
-          SLACK_CHANNEL: "tw-ykakui"
+          SLACK_CHANNEL: "test2"
           SLACK_MESSAGE: "Pushed to branch by ${{ github.actor }}. ${{ env.CONFLICT_MESSAGE }}"
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

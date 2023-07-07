@@ -1,0 +1,52 @@
+name: Slack Notification
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  slack_notification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: develop
+
+      - name: Detect Merge Conflict
+        id: conflict_check
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git fetch
+          REF=${{ github.ref_name }}
+          ORIGIN_REF="origin/$REF"
+          git merge --no-commit --no-ff $ORIGIN_REF
+          CONFLICTS=$(git ls-files -u | wc -l)
+          if [ "$CONFLICTS" -gt 0 ] ; then
+            echo "Merge conflict detected!"
+            echo "CONFLICT=true" >> $GITHUB_ENV
+          else
+            echo "No conflict"
+            echo "CONFLICT=false" >> $GITHUB_ENV
+          fi
+        continue-on-error: true
+
+      - name: Set Conflict Message
+        if: env.CONFLICT == 'true'
+        run: |
+          echo "CONFLICT_MESSAGE=Merge conflict detected." >> $GITHUB_ENV
+
+      - name: Set NoConflict Message
+        if: env.CONFLICT == 'false'
+        run: |
+          echo "CONFLICT_MESSAGE=No merge conflict." >> $GITHUB_ENV
+
+      - name: Send Slack notification
+        uses: rtCamp/action-slack-notify@v2.0.0
+        env:
+          SLACK_CHANNEL: "tw-ykakui"
+          SLACK_MESSAGE: "Pushed to branch by ${{ github.actor }}. ${{ env.CONFLICT_MESSAGE }}"

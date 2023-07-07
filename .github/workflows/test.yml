@@ -25,23 +25,15 @@ jobs:
           REF=${{ github.ref_name }}
           ORIGIN_REF="origin/$REF"
           git merge --no-commit --no-ff $ORIGIN_REF
-          CONFLICTS=$(git ls-files -u | wc -l)
-          if [ "$CONFLICTS" -gt 0 ] ; then
-            echo "Merge conflict detected!"
-            echo "CONFLICT=true" >> $GITHUB_ENV
-          else
-            echo "No conflict"
-            echo "CONFLICT=false" >> $GITHUB_ENV
-          fi
         continue-on-error: true
-
+  
       - name: Set Conflict Message
-        if: env.CONFLICT == 'true'
+        if: failure()
         run: |
           echo "CONFLICT_MESSAGE=Merge conflict detected." >> $GITHUB_ENV
 
       - name: Set NoConflict Message
-        if: env.CONFLICT == 'false'
+        if: success()
         run: |
           echo "CONFLICT_MESSAGE=No merge conflict." >> $GITHUB_ENV
 

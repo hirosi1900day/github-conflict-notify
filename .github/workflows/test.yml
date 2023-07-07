@@ -24,7 +24,7 @@ jobs:
           git checkout develop
           REF=${{ github.ref_name }}
           ORIGIN_REF="origin/$REF"
-          git merge --no-commit --no-ff $ORIGIN_REF
+          git merge --no-commit --no-ff develop $ORIGIN_REF
         continue-on-error: true
   
       - name: Set Conflict Message

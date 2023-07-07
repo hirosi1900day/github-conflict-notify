@@ -19,8 +19,6 @@ jobs:
       - name: Detect Merge Conflict
         id: conflict_check
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
           git fetch
           REF=${{ github.ref_name }}
           ORIGIN_REF="origin/$REF"

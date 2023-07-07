@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: develop
-
+  
       - name: Detect Merge Conflict
         id: conflict_check
         run: |
@@ -28,17 +28,18 @@ jobs:
         continue-on-error: true
   
       - name: Set Conflict Message
-        if: failure()
+        if: steps.conflict_check.outcome == 'failure'
         run: |
           echo "CONFLICT_MESSAGE=Merge conflict detected." >> $GITHUB_ENV
 
       - name: Set NoConflict Message
-        if: success()
+        if: steps.conflict_check.outcome == 'success'
         run: |
           echo "CONFLICT_MESSAGE=No merge conflict." >> $GITHUB_ENV
 
       - name: Send Slack notification
         uses: rtCamp/action-slack-notify@v2.0.0
         env:
-          SLACK_CHANNEL: "tw-ykakui"
+          SLACK_CHANNEL: "test2"
           SLACK_MESSAGE: "Pushed to branch by ${{ github.actor }}. ${{ env.CONFLICT_MESSAGE }}"
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
